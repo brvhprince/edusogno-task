@@ -1,0 +1,234 @@
+<?php
+/**
+ * Project: edusogno-task
+ * File: content.phtml
+ * Author: wanpeninsula
+ * Organization: Edusogno
+ * Author URI: https://www.pennycodes.dev
+ * Created: 11/10/2023 at 1:09 am
+ *
+ * Copyright (c) 2023 Edusogno. All rights reserved.
+ */
+
+global $app;
+
+$configs = EdusognoApp::configs();
+
+?>
+<div class="pt-12 sm:pt-16">
+    <div class="mx-auto max-w-7xl px-6 lg:px-8">
+        <div class=" my-8">
+            <div class="sm:flex sm:items-center">
+                <div class="sm:flex-auto">
+                    <h1 class="text-xl font-semibold text-gray-900">Update System Configurations</h1>
+                </div>
+            </div>
+            <div class="lg:grid lg:grid-cols-12 place-content-center mt-8 lg:gap-x-5">
+                <div class="space-y-6 sm:px-6 lg:col-span-12 lg:px-0">
+                    <form id="configurationForm">
+                        <div class="shadow sm:overflow-hidden sm:rounded-md  border border-brand-secondary">
+                            <div class="space-y-6 bg-white py-6 px-4 sm:p-6">
+                                <div>
+                                    <h3 class="text-lg font-medium leading-6 text-gray-900">System Configurations</h3>
+                                    <p class="mt-1 text-sm text-gray-500">Update system settings below</p>
+                                </div>
+
+                                <div class="grid grid-cols-6 gap-6">
+                                    <div class="col-span-6 sm:col-span-3">
+                                        <label for="site-name" class="block text-sm font-medium text-gray-700">Site name</label>
+                                        <input type="text" name="site_name" id="site-name"
+                                               placeholder="Site Name"
+                                               required
+                                               value="<?=$configs['site_name']?>"
+                                               class="block w-full appearance-none text-brand-dark ring-0 border-0 border-b-2 border-brand-secondary px-3 py-2 placeholder-brand-placeholder shadow-sm focus:border-0 focus:border-b-2 focus:border-brand focus:outline-none focus:ring-0 sm:text-sm">
+                                    </div>
+                                    <div class="col-span-6 sm:col-span-3">
+                                        <label for="site-title" class="block text-sm font-medium text-gray-700">Site title</label>
+                                        <input type="text" name="site_title" id="site-title"
+                                               placeholder="Site Title"
+                                               required
+                                               value="<?=$configs['site_title']?>"
+                                               class="block w-full appearance-none text-brand-dark ring-0 border-0 border-b-2 border-brand-secondary px-3 py-2 placeholder-brand-placeholder shadow-sm focus:border-0 focus:border-b-2 focus:border-brand focus:outline-none focus:ring-0 sm:text-sm">
+                                    </div>
+
+                                    <div class="col-span-6 sm:col-span-3">
+                                        <label for="site-keywords" class="block text-sm font-medium text-gray-700">Site keywords</label>
+                                        <input type="text" name="site_keywords" id="site-keywords"
+                                               placeholder="Site Keywords"
+                                               required
+                                               value="<?=$configs['site_keywords']?>"
+                                               class="block w-full appearance-none text-brand-dark ring-0 border-0 border-b-2 border-brand-secondary px-3 py-2 placeholder-brand-placeholder shadow-sm focus:border-0 focus:border-b-2 focus:border-brand focus:outline-none focus:ring-0 sm:text-sm">
+                                    </div>
+
+                                    <div class="col-span-6 sm:col-span-3">
+                                        <label for="site-description" class="block text-sm font-medium text-gray-700">Site description</label>
+                                        <textarea  name="site_desc" id="site-description"
+                                               placeholder="Site Description"
+                                               required
+                                                   cols="2"
+                                               class="block w-full appearance-none text-brand-dark ring-0 border-0 border-b-2 border-brand-secondary px-3 py-2 placeholder-brand-placeholder shadow-sm focus:border-0 focus:border-b-2 focus:border-brand focus:outline-none focus:ring-0 sm:text-sm"><?=$configs['site_desc']?></textarea>
+                                    </div>
+
+                                    <div class="col-span-6 sm:col-span-3">
+                                        <label for="site-email" class="block text-sm font-medium text-gray-700">Site email</label>
+                                        <input type="email" name="site_email" id="site-email"
+                                               placeholder="Site Email"
+                                               required
+                                               value="<?=$configs['site_email']?>"
+                                               class="block w-full appearance-none text-brand-dark ring-0 border-0 border-b-2 border-brand-secondary px-3 py-2 placeholder-brand-placeholder shadow-sm focus:border-0 focus:border-b-2 focus:border-brand focus:outline-none focus:ring-0 sm:text-sm">
+                                    </div>
+
+                                    <div class="col-span-6 sm:col-span-3">
+                                        <label for="smtp_or_mail" class="block text-sm font-medium text-gray-700">SMTP or Default PHP Mail </label>
+                                        <select id="smtp_or_mail" name="smtp_or_mail"
+                                                class="block w-full appearance-none text-brand-dark ring-0 border-0 border-b-2 border-brand-secondary px-3 py-2 placeholder-brand-placeholder shadow-sm focus:border-0 focus:border-b-2 focus:border-brand focus:outline-none focus:ring-0 sm:text-sm">
+                                            <option value="smtp" <?php if($configs['smtp_or_mail'] == 'smtp') echo 'selected'; ?>>SMTP</option>
+                                            <option value="mail" <?php if($configs['smtp_or_mail'] == 'mail') echo 'selected'; ?>>Mail</option>
+                                        </select>
+                                        <small class="text-gray-500">Choose whether to use SMTP with PHPMailer for mailing or use default PHP mail.</small>
+                                    </div>
+
+                                    <input type="hidden" name="hash_id" value="<?=Session::createFormToken()?>">
+                                        <div class="col-span-6 sm:col-span-3  ">
+                                            <label for="smtp_username" class="block text-sm font-medium text-gray-700">SMTP username</label>
+                                            <input type="text" name="smtp_username" id="smtp_username"
+                                                   placeholder="SMTP Username"
+                                                   required
+                                                   value="<?=$configs['smtp_username']?>"
+                                                   class="block w-full appearance-none text-brand-dark ring-0 border-0 border-b-2 border-brand-secondary px-3 py-2 placeholder-brand-placeholder shadow-sm focus:border-0 focus:border-b-2 focus:border-brand focus:outline-none focus:ring-0 sm:text-sm">
+                                        </div>
+                                        <div class="col-span-6 sm:col-span-3  ">
+                                            <label for="smtp_host" class="block text-sm font-medium text-gray-700">SMTP Host</label>
+                                            <input type="text" name="smtp_host" id="smtp_host"
+                                                   placeholder="SMTP Host"
+                                                   required
+                                                   value="<?=$configs['smtp_host']?>"
+                                                   class="block w-full appearance-none text-brand-dark ring-0 border-0 border-b-2 border-brand-secondary px-3 py-2 placeholder-brand-placeholder shadow-sm focus:border-0 focus:border-b-2 focus:border-brand focus:outline-none focus:ring-0 sm:text-sm">
+                                        </div>
+                                        <div class="col-span-6 sm:col-span-3  ">
+                                            <label for="smtp_password" class="block text-sm font-medium text-gray-700">SMTP Password</label>
+                                            <input type="text" name="smtp_password" id="smtp_password"
+                                                   placeholder="SMTP Password"
+                                                   required
+                                                   value="<?=$configs['smtp_password']?>"
+                                                   class="block w-full appearance-none text-brand-dark ring-0 border-0 border-b-2 border-brand-secondary px-3 py-2 placeholder-brand-placeholder shadow-sm focus:border-0 focus:border-b-2 focus:border-brand focus:outline-none focus:ring-0 sm:text-sm">
+                                        </div>
+                                        <div class="col-span-6 sm:col-span-3  ">
+                                            <label for="smtp_port" class="block text-sm font-medium text-gray-700">SMTP Port</label>
+                                            <input type="number" name="smtp_port" id="smtp_port"
+                                                   placeholder="SMTP Port"
+                                                   required
+                                                   value="<?=$configs['smtp_port']?>"
+                                                   class="block w-full appearance-none text-brand-dark ring-0 border-0 border-b-2 border-brand-secondary px-3 py-2 placeholder-brand-placeholder shadow-sm focus:border-0 focus:border-b-2 focus:border-brand focus:outline-none focus:ring-0 sm:text-sm">
+                                        </div>
+                                        <div class="col-span-6 sm:col-span-3  ">
+                                            <label for="smtp_encryption" class="block text-sm font-medium text-gray-700">SMTP Encryption</label>
+                                            <input type="text" name="smtp_encryption" id="smtp_encryption"
+                                                   placeholder="SMTP Encryption"
+                                                   required
+                                                   value="<?=$configs['smtp_encryption']?>"
+                                                   class="block w-full appearance-none text-brand-dark ring-0 border-0 border-b-2 border-brand-secondary px-3 py-2 placeholder-brand-placeholder shadow-sm focus:border-0 focus:border-b-2 focus:border-brand focus:outline-none focus:ring-0 sm:text-sm">
+                                        </div>
+
+                                    <div class="col-span-6 sm:col-span-3">
+                                        <label for="strong_password" class="block text-sm font-medium text-gray-700">Strong Password </label>
+                                        <select id="strong_password" name="strong_password"
+                                                class="block w-full appearance-none text-brand-dark ring-0 border-0 border-b-2 border-brand-secondary px-3 py-2 placeholder-brand-placeholder shadow-sm focus:border-0 focus:border-b-2 focus:border-brand focus:outline-none focus:ring-0 sm:text-sm">
+                                            <option value="1" <?php if($configs['strong_password'] == '1') echo 'selected'; ?>>Enable</option>
+                                            <option value="0" <?php if($configs['strong_password'] == '0') echo 'selected'; ?>>Disable</option>
+                                        </select>
+                                        <small class="text-gray-500">Select whether to enforce users to enter a strong and secured password</small>
+                                    </div>
+                                    <div class="col-span-6 sm:col-span-3">
+                                        <label for="date_style" class="block text-sm font-medium text-gray-700">Date Style </label>
+                                        <select id="date_style" name="date_style"
+                                                class="block w-full appearance-none text-brand-dark ring-0 border-0 border-b-2 border-brand-secondary px-3 py-2 placeholder-brand-placeholder shadow-sm focus:border-0 focus:border-b-2 focus:border-brand focus:outline-none focus:ring-0 sm:text-sm">
+                                            <option value="time_ago" <?php if($configs['date_style'] == 'time_ago'){echo 'selected';};?> >Time ago (2 secs ago)</option>
+                                            <option value="m-d-y" <?php if($configs['date_style'] == 'm-d-y'){echo 'selected';}?> >mm-dd-yy</option>
+                                            <option value="d-m-y" <?php if($configs['date_style'] == 'd-m-y'){echo 'selected';}?> >dd-mm-yy</option>
+                                            <option value="y-m-d" <?php if($configs['date_style'] == 'y-m-d'){echo 'selected';}?> >yy-mm-dd</option>
+                                            <option value="M-d-y" <?php if($configs['date_style'] == 'M-d-y'){echo 'selected';}?> >mmm-dd-yy</option>
+                                            <option value="d-F-y" <?php if($configs['date_style'] == 'd-F-y'){echo 'selected';}?> >dd-mmmm-yy</option>
+                                            <option value="Y-m-d" <?php if($configs['date_style'] == 'Y-m-d'){echo 'selected';}?> >yyyy-mm-dd</option>
+                                            <option value="d-M-Y" <?php if($configs['date_style'] == 'd-M-Y'){echo 'selected';}?> >dd-mmm-yyyy</option>
+                                            <option value="d-F-Y" <?php if($configs['date_style'] == 'd-F-Y'){echo 'selected';}?> >dd-mmmm-yyyy</option>
+                                            <option value="d, M Y \a\t g:ia" <?php if($configs['date_style'] == 'd, M Y \a\t g:ia'){echo 'selected';}?> >dd, M Y at time</option>
+                                            <option value="d/m/Y g:ia" <?php if($configs['date_style'] == 'd/m/Y g:ia'){echo 'selected';}?> >dd/mm/yyyy  time</option>
+                                        </select>
+                                        <small class="text-gray-500">Choose how date is formatted across the website</small>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 px-4 py-3 text-right sm:px-6">
+                                <button type="submit"
+                                        class="inline-flex justify-center  btn-submit rounded-md border border-transparent bg-brand py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-brand/70 focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2">Update Configurations</button>
+                                <button type="button" class="inline-flex btn-loading hidden justify-center items-center px-4 py-2 font-semibold leading-6 text-sm shadow rounded-md text-white bg-brand hover:bg-brand/70 transition ease-in-out duration-150 cursor-not-allowed" disabled="">
+                                    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    Loading...
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    document.querySelector('#configurationForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        configurationForm();
+    });
+
+
+    const btnSubmit = document.querySelector('.btn-submit');
+    const btnLoading = document.querySelector('.btn-loading');
+
+    const configurationForm = () => {
+        const form = document.querySelector('#configurationForm');
+
+        const url = Ed_Ajax_Requests_File() + '?f=system&s=configuration';
+
+        const formData = new FormData(form);
+
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", url);
+        xhr.responseType = "json";
+        xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+
+        // Disable submit button and show loading indicator
+        btnSubmit.classList.add('hidden');
+        btnLoading.classList.remove('hidden');
+
+        xhr.onreadystatechange = function(data) {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                const response = data.target.response;
+                if (xhr.status === 200) {
+                    notyf.success(response.message);
+                } else {
+                    if (xhr.status === 0) {
+                        notyf.error('Connection timed out. Check your network connectivity and retry');
+                    } else {
+                        notyf.error(response?.message || "An error occurred and that is all we know");
+                    }
+                }
+
+                // Re-enable submit button and hide loading indicator
+                btnSubmit.classList.remove('hidden');
+                btnLoading.classList.add('hidden');
+            }
+        };
+
+        xhr.send(formData);
+
+    }
+</script>

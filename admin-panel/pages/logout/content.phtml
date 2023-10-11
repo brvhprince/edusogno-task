@@ -1,0 +1,48 @@
+<?php
+/**
+ * Project: edusogno-task
+ * File: content.phtml
+ * Author: wanpeninsula
+ * Organization: Edusogno
+ * Author URI: https://www.pennycodes.dev
+ * Created: 10/10/2023 at 10:29 pm
+ *
+ * Copyright (c) 2023 Edusogno. All rights reserved.
+ */
+
+
+if (!Session::isAdmin()) {
+
+    Routes::redirect('', 'admin');
+
+}
+
+$IToken = $_GET['token'] ?? '';
+if (empty($IToken)) {
+    Routes::redirect('', 'admin');
+}
+$tokenCookieName = Utils::encode("adminToken");
+$IDCookieName = Utils::encode("adminID");
+
+if (Session::exists('admin_id') && Session::exists('admin_token')) {
+
+    $token = Session::get('admin_token');
+
+}elseif (Cookie::exists($tokenCookieName) && Cookie::exists($IDCookieName)) {
+
+    $decryptToken = Cookie::get($tokenCookieName);
+
+    $token = Utils::encode($decryptToken,'d');
+
+}else{
+
+    $token = "Invalid";
+}
+
+
+if(hash_equals($token, $IToken)) {
+
+    Session::destroyAdminSession();
+
+}
+Routes::redirect('auth', 'admin');

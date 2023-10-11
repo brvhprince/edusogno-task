@@ -1,0 +1,159 @@
+<?php
+/**
+ * Project: edusogno-task
+ * File: content.phtml
+ * Author: wanpeninsula
+ * Organization: Edusogno
+ * Author URI: https://www.pennycodes.dev
+ * Created: 09/10/2023 at 10:05 pm
+ *
+ * Copyright (c) 2023 Edusogno. All rights reserved.
+ */
+
+?>
+<div class="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div class="sm:mx-auto sm:w-full sm:max-w-md">
+        <h2 class="mt-6 text-center text-4xl font-bold tracking-tight text-brand-secondary">Have an account?</h2>
+    </div>
+
+    <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-lg">
+        <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-brand-secondary">
+            <form class="space-y-6" id="loginForm">
+                <div>
+                    <label for="email" class="block text-sm font-medium text-brand-dark">Enter your email</label>
+                    <div class="mt-1">
+                        <input
+                            id="email"
+                            name="email"
+                            type="email"
+                            autocomplete="email"
+                            required
+                            placeholder="email@example.com"
+                            class="block w-full appearance-none text-brand-dark ring-0 border-0 border-b-2 border-brand-secondary px-3 py-2 placeholder-brand-placeholder shadow-sm focus:border-0 focus:border-b-2 focus:border-brand focus:outline-none focus:ring-0 sm:text-sm">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700">Enter your password</label>
+                    <div class="mt-1">
+                        <span class="relative block">
+                        <input
+                            id="password"
+                            name="password"
+                            type="password"
+                            autocomplete="current-password"
+                            required
+                            placeholder="**********"
+                            class="block w-full appearance-none text-brand-dark ring-0 border-0 border-b-2 border-brand-secondary px-3 py-2 placeholder-brand-placeholder shadow-sm focus:border-0 focus:border-b-2 focus:border-brand focus:outline-none focus:ring-0 sm:text-sm">
+
+                              <span onclick="togglePassword()" id="togglePassword" data-visibility="hidden" class="absolute top-0 flex h-full w-[34px] cursor-pointer items-center justify-start right-0 lg:w-9">
+                                <img id="passwordImage" src="<?=Routes::loadPublicAssets('assets/images/eye-closed.svg')?>" alt="eye" class="h-5 w-5">
+                              </span>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <input id="remember-me" name="remember-me" value="yes" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-brand focus:ring-brand/90">
+                        <label for="remember-me" class="ml-2 block text-sm text-gray-900">Remember me</label>
+                    </div>
+
+                    <input type="hidden" name="hash_id" value="<?=Session::createMainSession()?>">
+
+                    <div class="text-sm">
+                        <a href="<?=Routes::loadSiteLink('forgot-password')?>" class="font-medium text-brand hover:text-brand/80">Forgot your password?</a>
+                    </div>
+                </div>
+
+                <div>
+                    <button type="submit"
+                            class="flex w-full justify-center btn-submit rounded-md border border-transparent bg-brand py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-brand/70 focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2">Sign in</button>
+                    <button type="button" class="flex w-full btn-loading hidden justify-center items-center px-4 py-2 font-semibold leading-6 text-sm shadow rounded-md text-white bg-brand hover:bg-brand/70 transition ease-in-out duration-150 cursor-not-allowed" disabled="">
+                        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Loading...
+                    </button>
+                </div>
+            </form>
+
+            <div class="mt-6">
+                <p class="text-center  text-15px"><span class="px-1 text-dark-350">Don't have an account?</span><a class="font-semibold underline text-brand-dark" href="<?=Routes::loadSiteLink('register')?>">Register</a></p>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    document.querySelector('#loginForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        loginForm();
+    });
+
+
+    const btnSubmit = document.querySelector('.btn-submit');
+    const btnLoading = document.querySelector('.btn-loading');
+
+    const loginForm = () => {
+        const form = document.querySelector('#loginForm');
+
+        const url = Ed_Ajax_Requests_File() + '?f=login&s=user';
+
+        const formData = new FormData(form);
+
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", url);
+        xhr.responseType = "json";
+        xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+
+        // Disable submit button and show loading indicator
+        btnSubmit.classList.add('hidden');
+        btnLoading.classList.remove('hidden');
+
+        xhr.onreadystatechange = function(data) {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                const response = data.target.response;
+                if (xhr.status === 200) {
+                    notyf.success(response.message);
+                    form.reset();
+                    setTimeout(() => window.location.reload(), 1000);
+                } else {
+                    if (xhr.status === 0) {
+                        notyf.error('Connection timed out. Check your network connectivity and retry');
+                    } else {
+                        notyf.error(response?.message || "An error occurred and that is all we know");
+                    }
+                }
+
+                // Re-enable submit button and hide loading indicator
+                btnSubmit.classList.remove('hidden');
+                btnLoading.classList.add('hidden');
+            }
+        };
+
+        xhr.send(formData);
+
+    }
+    const togglePassword = () => {
+        const isVisible = document.querySelector('#togglePassword').getAttribute('data-visibility');
+        const password = document.querySelector('#password');
+        const eyeVisiblePath = "<?=Routes::loadPublicAssets('assets/images/eye.svg')?>";
+        const eyeHiddenPath = "<?=Routes::loadPublicAssets('assets/images/eye-closed.svg')?>";
+
+        if (isVisible === 'hidden') {
+            document.querySelector('#togglePassword').setAttribute('data-visibility', 'visible');
+            document.querySelector('#passwordImage').src = eyeVisiblePath;
+            password.setAttribute('type', 'text');
+        } else {
+            document.querySelector('#togglePassword').setAttribute('data-visibility', 'hidden');
+            document.querySelector('#passwordImage').src = eyeHiddenPath;
+            password.setAttribute('type', 'password');
+        }
+    }
+
+</script>

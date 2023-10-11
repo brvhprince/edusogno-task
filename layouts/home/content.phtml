@@ -1,0 +1,202 @@
+<?php
+/**
+ * Project: edusogno-task
+ * File: content.phtml
+ * Author: wanpeninsula
+ * Organization: Edusogno
+ * Author URI: https://www.pennycodes.dev
+ * Created: 09/10/2023 at 9:56 pm
+ *
+ * Copyright (c) 2023 Edusogno. All rights reserved.
+ */
+
+
+global $app;
+
+$user = EdusognoApp::user()['user'];
+
+$eventHandler = $app->app('event');
+
+$allEvents = $eventHandler->getAllEvents();
+
+$userEvents = $eventHandler->getUserEvents($user['id']);
+
+$count = count($userEvents);
+
+$allCount = count($allEvents);
+
+
+?>
+<div class="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div class="sm:mx-auto sm:w-full sm:max-w-6xl px-4 md:px-0">
+        <h2 class="my-6 text-center text-2xl md:text-4xl font-bold tracking-tight text-brand-secondary">
+            Hi <?=$user['first_name']?>, here are your events
+        </h2>
+
+        <div class="overflow-hidden bg-white shadow sm:rounded-lg mb-4">
+            <div class="px-4 py-5 sm:px-6">
+                <h3 class="text-lg font-medium leading-6 text-gray-900">Events Joined</h3>
+                <?php
+                if ($count === 0) {
+                    ?>
+                    <p class="mt-1 max-w-2xl text-sm text-gray-500">
+                        You have not joined any event yet. Join an event to get started.
+                    </p>
+                <?php
+                }
+                ?>
+            </div>
+            <?php
+            if ($count > 0) {
+                ?>
+            <div class="border-t border-gray-200 px-4 py-5 sm:p-0">
+                <dl class="sm:divide-y sm:divide-gray-200">
+                    <?php
+                        foreach ($userEvents as $userEvent) :
+                    ?>
+                    <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5 sm:px-6">
+                        <dt class="text-sm font-medium text-gray-500">⦿ <?=$userEvent['name'] ?></dt>
+                        <dd class="mt-1 flex text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                            <span class="flex-grow"><?=$userEvent['date'] ?></span>
+                            <span class="ml-4 flex-shrink-0">
+                              <span class="rounded-md bg-white font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                                  Updated <?=$userEvent['updated'] ?>
+                              </span>
+                            </span>
+                        </dd>
+                    </div>
+                        <?php endforeach; ?>
+                </dl>
+            </div>
+            <?php
+            }
+            ?>
+        </div>
+
+        <h2 class="my-6 text-center text-2xl md:text-4xl font-bold tracking-tight text-brand-secondary">
+           Available Events
+        </h2>
+
+        <?php
+        if ($allCount === 0) {
+            ?>
+        <div class="overflow-hidden bg-white shadow sm:rounded-lg mb-4">
+            <div class="px-4 py-5 sm:px-6">
+        <p class="mt-1 max-w-2xl text-sm text-gray-500">
+           They are no events available at the moment. Please check back later.
+        </p>
+            </div>
+        </div>
+        <?php
+        }
+        ?>
+        <?php if ($allCount > 0) {
+            ?>
+            <ul role="list" class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                <?php
+                foreach ($allEvents as $allEvent) {
+
+                    ?>
+                <li class="col-span-1 divide-y divide-gray-200 border border-brand-secondary rounded-lg bg-white shadow">
+                    <div class="flex flex-col w-full items-start space-y-6 p-6">
+                        <h3 class="font-bold text-brand-dark text-2xl lg:text-3xl"><?=$allEvent['name']?></h3>
+                        <p class="mt-1 line-clamp-1 text-sm text-gray-500"><?=$allEvent['date']?></p>
+
+                        <div class=" w-full">
+                            <?php
+                            // disable join button if user has already joined event
+                            if (in_array($allEvent['id'], array_column($userEvents, 'id'))) {
+                               ?>
+                            <button type="button"  disabled
+                                    class="flex w-full justify-center btn-submit rounded-md border border-transparent bg-brand bg-opacity-50 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-brand/70 focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2 cursor-not-allowed pointer-events-none">Joined</button>
+
+                            <?php
+                            }
+                            else {
+                                ?>
+                            <button type="button" data-name="<?=$allEvent['name']?>" data-id="<?=$allEvent['id']?>" onclick="joinEvent(this)"
+                                    class="flex w-full justify-center btn-submit rounded-md border border-transparent bg-brand py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-brand/70 focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2">Join</button>
+                            <button type="button" class="flex w-full btn-loading hidden justify-center items-center px-4 py-2 font-semibold leading-6 text-sm shadow rounded-md text-white bg-brand hover:bg-brand/70 transition ease-in-out duration-150 cursor-not-allowed" disabled="">
+                                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                Loading...
+                            </button>
+                            <?php
+                            }
+                            ?>
+
+                        </div>
+                    </div>
+
+                </li>
+                <?php
+                    }
+                ?>
+            </ul>
+        <?php
+        }
+        ?>
+    </div>
+
+
+</div>
+
+
+<script>
+
+    const btnSubmit = document.querySelector('.btn-submit');
+    const btnLoading = document.querySelector('.btn-loading');
+
+    const joinEvent = (e) => {
+        const name = e.getAttribute('data-name');
+        const id = e.getAttribute('data-id');
+
+        const prompt = confirm(`Are you sure you want to join ${name}?`);
+        if (prompt) {
+            const url = Ed_Ajax_Requests_File() + '?f=event&s=join';
+
+            const formData = new FormData();
+            const formToken = "<?=Session::createFormToken()?>";
+            formData.append('hash_id', formToken);
+            formData.append('token', id);
+            formData.append('user', "<?=$user['id']?>");
+
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", url);
+            xhr.responseType = "json";
+            xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+
+            // Disable submit button and show loading indicator
+            btnSubmit.classList.add('hidden');
+            btnLoading.classList.remove('hidden');
+
+            xhr.onreadystatechange = function(data) {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    const response = data.target.response;
+                    if (xhr.status === 200) {
+                        notyf.success(response.message);
+                        setTimeout(() => window.location.reload(), 1000);
+                    } else {
+                        if (xhr.status === 0) {
+                            notyf.error('Connection timed out. Check your network connectivity and retry');
+                        } else {
+                            notyf.error(response?.message || "An error occurred and that is all we know");
+                        }
+                    }
+
+                    // Re-enable submit button and hide loading indicator
+                    btnSubmit.classList.remove('hidden');
+                    btnLoading.classList.add('hidden');
+                }
+            };
+
+            xhr.send(formData);
+
+        }
+    }
+
+
+</script>
+

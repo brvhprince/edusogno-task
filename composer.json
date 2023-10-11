@@ -1,0 +1,20 @@
+{
+    "name": "wanpeninsula/edusogno-task",
+    "description": "Edusogno PHP Task",
+    "type": "project",
+    "require": {
+        "phpmailer/phpmailer": "^6.8",
+        "php": ">=8.0",
+        "vlucas/phpdotenv": "^5.5",
+      "ext-mysqli": "*",
+        "ext-openssl": "*"
+    },
+    "license": "ISC",
+    "authors": [
+        {
+            "name": "Prince Takyi Akomea",
+            "email": "prince.akomea.stu@uenr.edu.gh"
+        }
+    ],
+    "minimum-stability": "stable"
+}

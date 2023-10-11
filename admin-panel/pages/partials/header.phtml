@@ -1,0 +1,60 @@
+<?php
+/**
+ * Project: edusogno-task
+ * File: header.phtml
+ * Author: wanpeninsula
+ * Organization: Edusogno
+ * Author URI: https://www.pennycodes.dev
+ * Created: 10/10/2023 at 10:08 pm
+ *
+ * Copyright (c) 2023 Edusogno. All rights reserved.
+ */
+?>
+
+<nav class="bg-light sticky top-0 z-30 h-16 rounded-b-lg drop-shadow shadow shadow-brand">
+    <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+        <div class="relative flex h-16 justify-between">
+            <div class="flex flex-1">
+                <div class="flex flex-shrink-0 items-center">
+                    <a
+                        href="<?=Routes::loadAdminLink()?>"
+                    >
+                        <img class="h-auto w-20" src="<?=Routes::loadPublicAssets('assets/brand/logo.png')?>" alt="<?=EdusognoApp::config('site_name')?>">
+                    </a>
+                </div>
+                <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                    <a href="<?=Routes::loadAdminLink()?>" class="inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium <?=Routes::$pageData['page'] === 'dashboard' ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-70'?>">Dashboard</a>
+                    <a href="<?=Routes::loadAdminLink('events')?>" class="inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium <?=in_array(Routes::$pageData['page'], ['events', 'events/create', 'events/edit']) ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-70'?>">Events</a>
+                    <a href="<?=Routes::loadAdminLink('users')?>" class="inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium <?=Routes::$pageData['page'] === 'users' ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-70'?>">Users</a>
+                </div>
+            </div>
+            <?php
+            if (Session::isAdmin()) {
+                ?>
+                <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+
+                    <div class="relative ml-3">
+                        <div>
+                            <button type="button" class="flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
+                                <span class="sr-only">Open user menu</span>
+
+                                <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-brand">
+                              <span class="font-medium leading-none text-white"><?=EdusognoApp::admin()['admin']['initials'] ?></span>
+                            </span>
+                            </button>
+                        </div>
+
+                        <div class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none scale-0 opacity-0" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1" id="user-menu-dropdown">
+                            <a href="<?=Routes::loadAdminLink('configuration')?>" class="block px-4 py-2 text-sm text-gray-700 hover:text-brand" role="menuitem" tabindex="-1" id="user-menu-item-2">Configurations</a>
+                            <a href="<?=Routes::loadAdminLink('logout?token='. EdusognoApp::admin()['token'])?>" class="block px-4 py-2 text-sm text-gray-700 hover:text-brand" role="menuitem" tabindex="-1" id="user-menu-item-2">Sign out</a>
+                        </div>
+                    </div>
+                </div>
+                <?php
+            }
+            ?>
+        </div>
+    </div>
+
+</nav>
+

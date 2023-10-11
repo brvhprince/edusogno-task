@@ -1,0 +1,53 @@
+<?php
+/**
+ * Project: edusogno-task
+ * File: scripts.phtml
+ * Author: wanpeninsula
+ * Organization: Edusogno
+ * Author URI: https://www.pennycodes.dev
+ * Created: 10/10/2023 at 10:27 pm
+ *
+ * Copyright (c) 2023 Edusogno. All rights reserved.
+ */
+?>
+<script src="<?=Routes::loadPublicAssets('assets/js/notyf.min.js')?>"></script>
+<script src="<?=Routes::loadPublicAssets('assets/js/init.js')?>"></script>
+
+<script>
+    // JavaScript to open and close the dropdown
+    const userMenuButton = document.getElementById('user-menu-button');
+    const userMenuDropdown = document.getElementById('user-menu-dropdown');
+
+    userMenuButton.addEventListener('click', () => {
+        const isOpen = userMenuButton.getAttribute('aria-expanded') === "true";
+
+
+        if (isOpen) {
+            // Close the dropdown
+            userMenuDropdown.classList.remove('transition', 'ease-out', 'duration-200');
+            userMenuDropdown.classList.add('transition', 'ease-in', 'duration-75');
+            userMenuDropdown.classList.remove('scale-100', 'opacity-100');
+            userMenuDropdown.classList.add('scale-0', 'opacity-0');
+            userMenuButton.setAttribute('aria-expanded', 'false');
+        } else {
+            // Open the dropdown
+            userMenuDropdown.classList.remove('transition', 'ease-in', 'duration-75');
+            userMenuDropdown.classList.add('transition', 'ease-out', 'duration-200');
+            userMenuDropdown.classList.remove('scale-0', 'opacity-0');
+            userMenuDropdown.classList.add('scale-100', 'opacity-100');
+            userMenuButton.setAttribute('aria-expanded', 'true');
+        }
+    });
+
+    // Close the dropdown when clicking outside of it
+    window.addEventListener('click', (event) => {
+        if (!userMenuButton.contains(event.target) && !userMenuDropdown.contains(event.target)) {
+            userMenuDropdown.classList.remove('transition', 'ease-out', 'duration-200');
+            userMenuDropdown.classList.add('transition', 'ease-in', 'duration-75');
+            userMenuDropdown.classList.remove('scale-100', 'opacity-100');
+            userMenuDropdown.classList.add('scale-0', 'opacity-0');
+            userMenuButton.setAttribute('aria-expanded', 'false');
+        }
+    });
+</script>
+

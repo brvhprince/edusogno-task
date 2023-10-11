@@ -1,0 +1,255 @@
+<?php
+/**
+ * Project: edusogno-task
+ * File: autoload.php
+ * Author: wanpeninsula
+ * Organization: Edusogno
+ * Author URI: https://www.pennycodes.dev
+ * Created: 10/10/2023 at 9:54 pm
+ *
+ * Copyright (c) 2023 Edusogno. All rights reserved.
+ */
+$page = 'dashboard';
+
+$pages = array(
+    'dashboard',
+    'auth',
+    'users',
+    'events',
+    'configuration',
+    'events/create',
+    'events/view',
+    'events/edit',
+    'logout',
+);
+
+if (!empty($_GET['page'])) {
+    $page = Utils::secureInput($_GET['page']);
+}
+if (!$is_admin && !in_array($page, ['404', '403', '500'])){
+    $page = 'auth';
+}
+if ($is_admin && $page =='auth'){
+    Routes::redirect('', 'admin');
+}
+
+if (in_array($page, $pages)) {
+    $page_loaded = Routes::loadAdminPage("$page/content");
+}
+
+if (empty($page_loaded)) {
+    Routes::redirect('', 'admin');
+}
+
+Routes::$pageData['page'] = $page;
+
+
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="Content-Language" content="en-US">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Admin Panel :: <?=EdusognoApp::config('site_title')?> :: <?=ucfirst($page)?></title>
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/png"  href="<?=Routes::loadPublicAssets('assets/brand/favicon.png')?>">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,200;0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,100&display=swap" rel="stylesheet">
+    <style type="text/tailwindcss">
+        @tailwind base;
+        @tailwind components;
+        @tailwind utilities;
+
+        html {
+            @apply h-full
+        }
+
+        @layer base {
+
+            html {
+                @apply bg-brand-background text-white;
+                -webkit-tap-highlight-color: transparent;
+            }
+            html,
+            body {
+                @apply h-full antialiased font-body;
+            }
+            #content {
+                @apply h-full text-13px;
+            }
+            p {
+                @apply mb-5;
+            }
+            p:last-of-type {
+                @apply mb-0;
+            }
+            p > strong {
+                @apply font-semibold;
+            }
+            p > a {
+                @apply transition;
+            }
+
+            button {
+                @apply focus:outline-none;
+            }
+
+            /*remove user agent styles for auto complete and  edge*/
+            input[type="password"]::-ms-reveal,
+            input[type="password"]::-ms-clear {
+                display: none;
+            }
+
+            input{
+                background-image: none!important;
+            }
+            input:-webkit-autofill,
+            input:-webkit-autofill:hover,
+            input:-webkit-autofill:focus,
+            input:-webkit-autofill:active {
+                transition: background-color 5000s ease-in-out 0s, color 5000s ease-in-out 0s!important;;
+                transition-delay: background-color 5000s, color  5000s!important;
+                -webkit-text-fill-color:currentColor!important;
+                -webkit-background-clip: text
+            }
+
+
+
+            /* custom scrollbar */
+            ::-webkit-scrollbar {
+                @apply h-1.5 w-1.5;
+            }
+            ::-webkit-scrollbar-thumb {
+                @apply bg-brand-dark;
+            }
+            ::-webkit-scrollbar-track {
+                box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.4);
+            }
+        }
+
+        /* custom utilities */
+        @layer utilities {
+            .h-inherit {
+                height: inherit;
+            }
+            .active-text-dark {
+                text-shadow: 0 0 #181818;
+            }
+            .active-text-light {
+                text-shadow: 0 0 #e6e6e6;
+            }
+            .transition-fill-colors {
+                transition-property: background-color, fill;
+                transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+                transition-duration: 150ms;
+            }
+        }
+
+    </style>
+    <link rel="stylesheet" href="<?=Routes::loadPublicAssets('assets/css/notyf.min.css')?>">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                screens: {
+                    xs: '480px',
+                    sm: '640px',
+                    md: '768px',
+                    lg: '1024px',
+                    xl: '1280px',
+                    '2xl': '1440px',
+                    '3xl': '1780px',
+                    '4xl': '2160px',
+                },
+                fontFamily: {
+                    body: ['DM Sans', 'sans-serif'],
+                },
+                extend: {
+                    colors: {
+                        brand: {
+                            DEFAULT: '#0057FF',
+                            secondary: '#134077',
+                            violet: '#2D224C',
+                            dark: '#231F20',
+                            placeholder: '#CCCCCC',
+                            background: '#d9e5f3'
+                        },
+                        light: {
+                            DEFAULT: '#ffffff',
+                            base: '#646464',
+                            100: '#f9f9f9',
+                            200: '#f2f2f2',
+                            300: '#ededed',
+                            400: '#e6e6e6',
+                            500: '#dadada',
+                            600: '#d2d2d2',
+                            800: '#bcbcbc',
+                            900: '#a8a8a8',
+                        },
+                        dark: {
+                            DEFAULT: '#000000',
+                            base: '#a5a5a5',
+                            100: '#181818',
+                            200: '#212121',
+                            250: '#252525',
+                            300: '#2a2a2a',
+                            350: '#2b2b2b',
+                            400: '#323232',
+                            450: '#2e2e2e',
+                            500: '#3e3e3e',
+                            600: '#4a4a4a',
+                            700: '#6e6e6e',
+                            800: '#808080',
+                            850: '#989898',
+                            900: '#999999',
+                            950: '#2b2b2b',
+                        },
+                    },
+                    fontSize: {
+                        '10px': '.625rem',
+                        '13px': '13px',
+                        '15px': '15px',
+                    },
+                    boxShadow: {
+                        card: '0px 0px 6px rgba(79, 95, 120, 0.1)',
+                        dropdown: '0px 10px 32px rgba(46, 57, 72, 0.2)',
+                        'bottom-nav': '0 -2px 3px rgba(0, 0, 0, 0.08)',
+                    },
+                }
+            }
+        }
+
+        function Ed_Ajax_Requests_File(){
+            return "<?php echo Routes::siteUrl().'/requests.php';?>"
+        }
+
+        function Ed_Admin_Url(){
+            return "<?php echo Routes::siteUrl(). '/admin-cp'?>"
+        }
+
+    </script>
+
+</head>
+<body>
+<main id="content" role="main" class="main">
+    <div class="flex min-h-screen w-full flex-col">
+        <?php
+       if ($is_admin) echo Routes::loadAdminPage('partials/header');
+        ?>
+        <div class="flex flex-1 flex-col justify-between">
+            <main class="flex w-full flex-grow flex-col">
+                <?=$page_loaded?>
+            </main>
+            <footer></footer>
+        </div>
+    </div>
+</main>
+<?=Routes::loadAdminPage('partials/scripts')?>
+</body>
+</html>
+

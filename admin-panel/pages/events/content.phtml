@@ -1,0 +1,148 @@
+<?php
+/**
+ * Project: edusogno-task
+ * File: content.phtml
+ * Author: wanpeninsula
+ * Organization: Edusogno
+ * Author URI: https://www.pennycodes.dev
+ * Created: 10/10/2023 at 10:49 pm
+ *
+ * Copyright (c) 2023 Edusogno. All rights reserved.
+ */
+
+global $app;
+
+$event  = $app->app('event');
+$allEvents = $event->getAllEvents();
+$totalEvents =count($allEvents);
+
+?>
+<div class="pt-12 sm:pt-16">
+    <div class="mx-auto max-w-7xl px-6 lg:px-8">
+
+        <div class="">
+            <div class="sm:flex sm:items-center">
+                <div class="sm:flex-auto">
+                    <h1 class="text-xl font-semibold text-gray-900">Events</h1>
+                    <p class="mt-2 text-sm text-gray-700">There are <?=$totalEvents?> events added</p>
+                </div>
+                <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+                    <a  href="<?=Routes::loadAdminLink('events/create')?>" class="ml-3 inline-flex items-center rounded-md border border-transparent bg-brand px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-brand/80 focus:outline-none focus:ring-2 focus:ring-brand/80 focus:ring-offset-2">Add Event</a>
+
+                </div>
+            </div>
+            <div class="mt-8 flex flex-col">
+                <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                    <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+                        <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+                            <table class="min-w-full divide-y divide-gray-300">
+                                <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Name</th>
+                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Event Date</th>
+                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Attendees</th>
+                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Last Updated</th>
+                                    <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                                        <span class="sr-only">Edit</span>
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody class="bg-white">
+                                <?php
+                                if ($totalEvents > 0) {
+                                    foreach ($allEvents as $allEvent) {
+                                    ?>
+                                        <tr>
+                                            <td class="whitespace-nowrap border-b border-gray-200 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8">
+                                                <a class="hover:underline text-brand" href="<?=Routes::loadAdminLink('events/view?token='.$allEvent['id'])?>"><?=$allEvent['name'] ?></a>
+                                            </td>
+                                            <td class="whitespace-nowrap border-b border-gray-200 px-3 py-4 text-sm text-gray-500"><?=$allEvent['date'] ?></td>
+                                            <td class="whitespace-nowrap border-b border-gray-200 px-3 py-4 text-sm text-gray-500"><?=count($allEvent['attendees']) ?> attendees</td>
+                                            <td class="whitespace-nowrap border-b border-gray-200 px-3 py-4 text-sm text-gray-500"><?=$allEvent['updated'] ?></td>
+                                            <td class="relative whitespace-nowrap border-b border-gray-200 py-4 pr-4 pl-3 text-right text-sm font-medium sm:pr-6 lg:pr-8">
+                                                <a href="<?=Routes::loadAdminLink('events/edit?token='.$allEvent['id'] )?>" class="text-brand hover:text-brand/80">Edit</a>
+                                                <button onclick="deleteEvent(this)" type="button" data-name="<?=$allEvent['name'] ?>" data-token="<?=$allEvent['id'] ?>" class="btn-submit text-red-600 hover:text-red-900 ml-4">Delete</button>
+                                                <button type="button" data-token="<?=$allEvent['id'] ?>" class="btn-loading text-red-600 hover:text-red-900 ml-4 hidden cursor-not-allowed pointer-events-none opacity-50 " disabled>Deleting...</button>
+                                            </td>
+                                        </tr>
+                                    <?php
+                                }
+                                }
+                                else {
+                                    ?>
+                                    <tr>
+                                        <td colspan="5" class="whitespace-nowrap border-b text-center border-gray-200 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8">No events added</td>
+                                    </tr>
+                                <?php
+                                }
+                                ?>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    const btnSubmit = document.querySelector('.btn-submit');
+    const btnLoading = document.querySelector('.btn-loading');
+
+    const deleteEvent = (e) => {
+        const name = e.getAttribute('data-name');
+        const id = e.getAttribute('data-token');
+
+        const prompt = confirm(`Are you sure you want to delete ${name}? This action is irreversible`);
+        if (prompt) {
+            const url = Ed_Ajax_Requests_File() + '?f=event&s=remove';
+
+            const formData = new FormData();
+            const formToken = "<?=Session::createFormToken()?>";
+            formData.append('hash_id', formToken);
+            formData.append('token', id);
+
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", url);
+            xhr.responseType = "json";
+            xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+
+            // Disable submit button and show loading indicator
+            btnSubmit.classList.add('hidden');
+            btnLoading.classList.remove('hidden');
+
+            xhr.onreadystatechange = function(data) {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    const response = data.target.response;
+                    if (xhr.status === 200) {
+                        notyf.success(response.message);
+                        setTimeout(() => window.location.reload(), 1000);
+                    } else {
+                        if (xhr.status === 0) {
+                            notyf.error('Connection timed out. Check your network connectivity and retry');
+                        } else {
+                            notyf.error(response?.message || "An error occurred and that is all we know");
+                        }
+                    }
+
+                    // Re-enable submit button and hide loading indicator
+                    btnSubmit.classList.remove('hidden');
+                    btnLoading.classList.add('hidden');
+                }
+            };
+
+            xhr.send(formData);
+
+        }
+    }
+
+
+</script>
+
+
