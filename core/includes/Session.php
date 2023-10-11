@@ -232,7 +232,12 @@ class Session
             return ['user' => $user, 'token' => self::get('user_token')];
         }
         else if (Cookie::exists($cookie_name) && Cookie::exists($cookie_token)) {
-            $user = (new User)->fetchUser(Utils::encode(Cookie::get($cookie_name), 'd'));
+            $id = (Utils::encode(Cookie::get($cookie_name), 'd'));
+            $id = (Utils::encode($id, 'd'));
+            $user = (new User)->fetchUser($id);
+            if (empty($user)) {
+                Session::destroyUserSession();
+            }
             return ['user' => $user, 'token' => Utils::encode(Cookie::get($cookie_token), 'd')];
         }
 
@@ -254,7 +259,12 @@ class Session
             return ['admin' => $admin, 'token' => self::get('admin_token')];
         }
         else if (Cookie::exists($cookie_name) && Cookie::exists($cookie_token)) {
-            $admin = (new Admin)->fetchAdmin(Utils::encode(Cookie::get($cookie_name), 'd'));
+            $id = (Utils::encode(Cookie::get($cookie_name), 'd'));
+            $id = (Utils::encode($id, 'd'));
+            $admin = (new Admin)->fetchAdmin($id);
+            if (empty($admin)) {
+                Session::destroyAdminSession();
+            }
             return ['admin' => $admin, 'token' => Utils::encode(Cookie::get($cookie_token), 'd')];
         }
 
