@@ -5,7 +5,7 @@ This project requires the following prerequisites:
 * [PHP 8.0+](https://www.php.net/downloads.php)
 * [Composer](https://getcomposer.org/)
 * [MySQL](https://www.mysql.com/)
-* A Web Server (e.g. Apache or Nginx)
+* Apache Web Server
 * PHPMyAdmin (optional) (https://www.phpmyadmin.net/)
 
 ### Installation
@@ -33,3 +33,27 @@ This project requires the following prerequisites:
     DB_USER=edusogno # MySQL user
     DB_PASSWORD=edusogno  # MySQL password
     ```
+5. Import the database schemas located in `migrations/` into your database.
+
+    ```bash
+    mysql -u root -p < migrations/db.sql
+   ```
+6. Run the following sql command to update the `base_url` in the database:
+
+    ```sql
+    UPDATE ed_config SET value = 'http://base_url' WHERE name = 'site_url';
+    ```
+   Replace `base_url` with the base url of your website.
+
+Access the admin panel by visiting https://base_url/admin-cp
+
+Use the following credentials to login:
+
+```
+email address: wan@wan.com
+password: 12345
+```
+
+You can access the client panel by visiting https://base_url
+
+Create a new account to explore the client panel.
